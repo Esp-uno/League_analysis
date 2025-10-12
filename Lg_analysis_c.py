@@ -42,16 +42,18 @@ def get_data():
 
 def data_visuals(pandas_table):
        
-        #possession vs points   
+        #Goals for vs Expected goals
         plt.scatter(pandas_table['Squad'],pandas_table['GF'], label = 'Goals for')
         plt.scatter(pandas_table['Squad'],pandas_table['xG'], label = 'Expected goals')
         plt.xticks(rotation = 45, ha='right')
+        max_goals = int(pandas_table[['GF', 'xG']].max().max()) + 1
+        plt.yticks(range(0, max_goals + 1, 1))
         plt.title("Goals compared to Expected Goals")
         plt.xlabel('Team')
         plt.ylabel('Goals')
         plt.legend()
         plt.show()
-
+        
 
 pandas_table = get_data()
 data_visuals(pandas_table)
