@@ -33,42 +33,22 @@ def close_v_user():
 df_sp500 = history
 
 #Create column tomorrow and set it as the closing price from the day before
-
 df_sp500["Tomorrow"] = df_sp500['Close'].shift(-1)
 
 # if tomorrows price is greater than the closing price return 1 else return 0
-
 df_sp500['Target'] = (df_sp500['Tomorrow']>df_sp500['Close']).astype(int)
 
 #Get rid of anything before 2008
-
 df_sp500 = df_sp500.loc['2008-01-01':].copy()
 
-def learning_and_precision():
-    
-    model = RandomForestClassifier(n_estimators=300,min_samples_split=100,random_state=1)
-    train = df_sp500.iloc[:-100]
-    test = df_sp500.iloc[-100:]
-
-    predictors = ['High','Low','Open','Close','Volume']
-    model.fit(train[predictors],train['Target'])
-
-    #create prediction
-    pred = model.predict(test[predictors]) 
-    pred = pd.Series(pred,index= test.index)
-
-    #generate a precision score
-    precision = precision_score(test['Target'],pred)
-
-    combined = pd.concat(test['Target'],pred, axis=1)
-
-    return model, precision, combined
+#Create model and predictors (non-linear variables)
+model = RandomForestClassifier(n_estimators=300,min_samples_split=100,random_state=1)
+predictors = ['High','Low','Open','Close','Volume']
 
 
-def backtesting(data, model, predictors, start= 2500, step= 2):
-    
-    model = RandomForestClassifier(n_estimators=300, min_samples_split=100, random_state=1)
-    predictors = ['High', 'Low', 'Open', 'Close', 'Volume']
+
+def backtesting(data, model, predictors, start= 2500, step= 250):
+
 
     total_predictions = []
 
@@ -89,7 +69,7 @@ def backtesting(data, model, predictors, start= 2500, step= 2):
 
     return pd.concat(total_predictions), predictions
     
-backtesting()
+
         
 
 
